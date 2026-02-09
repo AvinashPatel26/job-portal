@@ -31,9 +31,11 @@ public class DashboardService {
         );
     }
 
-	public DashboardAnalytics getAnalytics(Long userId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public DashboardAnalytics getAnalytics(Long userId) {
 
+        return new DashboardAnalytics(
+                applicationRepository.countApplicationsPerMonth(userId),
+                applicationRepository.countByStatus(userId)
+        );
+    }
 }

@@ -18,22 +18,23 @@ public class AuthService {
 
     public User register(User user) {
 
-        // Default role if not provided
         if (user.getRole() == null) {
             user.setRole(Role.JOB_SEEKER);
         }
-
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new RuntimeException("Email already registered");
         }
 
-        return userRepository.save(user);
+        user.setPassword(
+                passwordEncoder.encode(user.getPassword())
+        );
 
+        return userRepository.save(user);
     }
 
     public String login(String email, String password) {
+
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -41,6 +42,7 @@ public class AuthService {
             throw new RuntimeException("Invalid credentials");
         }
 
+        // ✅ IMPORTANT FIX
         return jwtUtil.generateToken(user.getEmail());
     }
 }

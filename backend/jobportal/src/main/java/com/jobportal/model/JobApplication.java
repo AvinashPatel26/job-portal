@@ -24,7 +24,7 @@ public class JobApplication {
 
     private String status;
 
-    // ✅ REQUIRED for analytics
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @PrePersist

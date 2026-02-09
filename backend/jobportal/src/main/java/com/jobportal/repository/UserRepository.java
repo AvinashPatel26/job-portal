@@ -2,10 +2,14 @@ package com.jobportal.repository;
 
 import com.jobportal.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
-@Repository
+
 public interface UserRepository extends JpaRepository<User, Long> {
+
+    // Used during login (AuthService)
     Optional<User> findByEmail(String email);
+
+    // Useful for validations (register)
+    boolean existsByEmail(String email);
 }

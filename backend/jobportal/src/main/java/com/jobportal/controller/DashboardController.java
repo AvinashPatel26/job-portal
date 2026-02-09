@@ -1,9 +1,10 @@
 package com.jobportal.controller;
 
-import com.jobportal.dto.DashboardAnalytics;
-import com.jobportal.dto.DashboardStats;
+import com.jobportal.dto.*;
+import com.jobportal.security.CustomUserDetails;
 import com.jobportal.service.DashboardService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,14 +16,12 @@ public class DashboardController {
     private final DashboardService dashboardService;
 
     @GetMapping("/stats")
-    public DashboardStats getStats(
-            @RequestParam Long userId) {
+    public DashboardStats stats(@RequestParam Long userId) {
         return dashboardService.getStats(userId);
     }
 
     @GetMapping("/analytics")
-    public DashboardAnalytics getAnalytics(
-            @RequestParam Long userId) {
+    public DashboardAnalytics analytics(@RequestParam Long userId) {
         return dashboardService.getAnalytics(userId);
     }
 }

@@ -10,36 +10,33 @@ import java.util.Map;
 public interface JobApplicationRepository
         extends JpaRepository<JobApplication, Long> {
 
-    // ===== BASIC =====
+    // User applications
+    List<JobApplication> findByApplicant_Id(Long applicantId);
 
-    Long countByApplicant_Id(Long userId);
+    // Dashboard stats
+    Long countByApplicant_Id(Long applicantId);
 
-    List<JobApplication> findByApplicant_Id(Long userId);
+    // Prevent duplicate apply
+    boolean existsByApplicant_IdAndJob_Id(Long applicantId, Long jobId);
 
-    boolean existsByApplicant_IdAndJob_Id(Long userId, Long jobId);
-
-
-    // ===== DASHBOARD ANALYTICS =====
-
-    @Query("""
-        SELECT 
-            FUNCTION('TO_CHAR', a.id, 'MM') as month,
-            COUNT(a) as count
-        FROM JobApplication a
-        WHERE a.applicant.id = :userId
-        GROUP BY FUNCTION('TO_CHAR', a.id, 'MM')
+    // Monthly analytics
+    @Query(value = """
+        SELECT TO_CHAR(created_at, 'Mon') as month,
+               COUNT(*) as count
+        FROM job_application
+        WHERE applicant_id = :userId
+        GROUP BY month
         ORDER BY month
-    """)
+        """, nativeQuery = true)
     List<Map<String, Object>> countApplicationsPerMonth(Long userId);
 
-
-    @Query("""
-        SELECT 
-            a.status as name,
-            COUNT(a) as value
-        FROM JobApplication a
-        WHERE a.applicant.id = :userId
-        GROUP BY a.status
-    """)
+    // Status analytics
+    @Query(value = """
+        SELECT status as name,
+               COUNT(*) as value
+        FROM job_application
+        WHERE applicant_id = :userId
+        GROUP BY status
+        """, nativeQuery = true)
     List<Map<String, Object>> countByStatus(Long userId);
 }
