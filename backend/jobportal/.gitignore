@@ -31,3 +31,21 @@ build/
 
 ### VS Code ###
 .vscode/
+# Backend
+backend/jobportal/target/
+*.jar
+*.log
+.env
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
