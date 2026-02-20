@@ -24,11 +24,11 @@ public class JobApplication {
 
     private String status;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    // NEW FIELDS
+    private String resumePath;
 
-    @PrePersist
-    public void prePersist() {
-        this.createdAt = LocalDateTime.now();
-    }
+    @Column(length = 2000)
+    private String recruiterNotes;
+
+    private LocalDateTime interviewDate;
 }

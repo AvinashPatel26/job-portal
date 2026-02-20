@@ -39,4 +39,36 @@ public interface JobApplicationRepository
         GROUP BY status
         """, nativeQuery = true)
     List<Map<String, Object>> countByStatus(Long userId);
+    
+    @Query(value = """
+    	    SELECT status as name, COUNT(*) as value
+    	    FROM job_application ja
+    	    JOIN job j ON ja.job_id = j.id
+    	    WHERE j.posted_by_id = :employerId
+    	    GROUP BY status
+    	""", nativeQuery = true)
+    	List<Map<String, Object>> countEmployerApplicationsByStatus(Long employerId);
+
+    @Query(value = """
+    	    SELECT COUNT(*)
+    	    FROM job_application ja
+    	    JOIN job j ON ja.job_id = j.id
+    	    WHERE j.posted_by_id = :employerId
+    	    """, nativeQuery = true)
+    	Long countByEmployerJobs(Long employerId);
+
+
+    	@Query(value = """
+    	    SELECT COUNT(*)
+    	    FROM job_application ja
+    	    JOIN job j ON ja.job_id = j.id
+    	    WHERE j.posted_by_id = :employerId
+    	    AND ja.status = :status
+    	    """, nativeQuery = true)
+    	Long countByEmployerAndStatus(Long employerId, String status);
+    	List<JobApplication> findByJob_Id(Long jobId);
+
+    	long count();
+
+    	
 }

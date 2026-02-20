@@ -9,4 +9,6 @@ public class DashboardStats {
     private Long appliedJobs;
     private Long savedJobs;
     private Long availableJobs;
+    private Long unreadNotifications;
+
 }

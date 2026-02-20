@@ -1,8 +1,10 @@
 package com.jobportal.security;
 
+import com.jobportal.config.JwtProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 
@@ -12,45 +14,41 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    private final String SECRET =
-            "jobportal_secret_key_jobportal_secret_key_123456";
+    private final JwtProperties jwtProperties;
 
-    private Key getSignKey() {
-        return Keys.hmacShaKeyFor(SECRET.getBytes());
+    public JwtUtil(JwtProperties jwtProperties) {
+        this.jwtProperties = jwtProperties;
     }
 
-    // ✅ generate token using email
-    public String generateToken(String email) {
+    private Key getSigningKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(jwtProperties.getSecret());
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
 
+    public String generateToken(String username) {
         return Jwts.builder()
-                .setSubject(email)
+                .setSubject(username)
                 .setIssuedAt(new Date())
-                .setExpiration(
-                        new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)
-                )
-                .signWith(getSignKey(), SignatureAlgorithm.HS256)
+                .setExpiration(new Date(System.currentTimeMillis() + jwtProperties.getExpiration()))
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    // ✅ used in JwtAuthFilter
     public String extractUsername(String token) {
         return extractAllClaims(token).getSubject();
     }
 
-    public boolean validateToken(String token, String email) {
-        return extractUsername(token).equals(email)
-                && !isTokenExpired(token);
+    public boolean validateToken(String token, String username) {
+        return extractUsername(token).equals(username) && !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token) {
-        return extractAllClaims(token)
-                .getExpiration()
-                .before(new Date());
+        return extractAllClaims(token).getExpiration().before(new Date());
     }
 
     private Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(getSignKey())
+                .setSigningKey(getSigningKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody();

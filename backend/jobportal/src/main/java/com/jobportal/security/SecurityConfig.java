@@ -21,13 +21,20 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .cors(cors -> {})
             .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/api/auth/**").permitAll()
-                    .requestMatchers("/api/jobs/**").permitAll()
-                    .anyRequest().authenticated()
-            )
-            .addFilterBefore(
-                    jwtAuthFilter,
-                    UsernamePasswordAuthenticationFilter.class
+
+                // PUBLIC
+                .requestMatchers("/api/auth/**").permitAll()
+
+                // ADMIN ONLY
+                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+
+                // EMPLOYER ONLY
+                .requestMatchers("/api/employer/**").hasRole("EMPLOYER")
+
+                // USER
+                .requestMatchers("/api/applications/**").hasAnyRole("USER","EMPLOYER")
+
+                .anyRequest().authenticated()
             );
 
         return http.build();

@@ -29,4 +29,8 @@ public interface JobRepository extends JpaRepository<Job, Long> {
             String title,
             String location
     );
+    Long countByPostedBy_Id(Long employerId);
+
+    long count();
+
 }

@@ -11,6 +11,8 @@ const token = localStorage.getItem("token");
 
 
 import "./index.css"; 
+import EmployerPipelinePage from "./pages/EmployerPipelinePage";
+import EmployerDashboardPage from "./pages/EmployerDashboardPage";
 export default function App() {
   const token = useSelector((state) => state.auth.token);
 
@@ -72,6 +74,15 @@ export default function App() {
   path="/dashboard"
   element={token ? <DashboardPage /> : <Navigate to="/login" />}
 />
+<Route
+  path="/employer-dashboard"
+  element={
+    <ProtectedRoute>
+      <EmployerDashboardPage />
+    </ProtectedRoute>
+  }
+/>
+<Route path="/employer/pipeline" element={<EmployerPipelinePage />} />
 
 
     </Routes>
