@@ -23,7 +23,7 @@ jobs:
       - name: Build Backend
         run: |
           cd backend/jobportal
-          ./mvnw clean package -DskipTests
+          mvn clean package -DskipTests
 
       # ---------- Frontend Build ----------
       - name: Setup Node.js
